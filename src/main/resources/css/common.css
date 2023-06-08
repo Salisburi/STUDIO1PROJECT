@@ -56,6 +56,22 @@ img.top-image {
    background-color: #ddd;
    padding: 10px;
  }
+
+ .population-year-heading {
+   font-weight: bold;
+ }
+
+ .population-year-value {
+   font-style: italic;
+ }
+
+ .global-year-heading {
+   font-weight: bold;
+ }
+
+ .global-year-value {
+   font-style: italic;
+ }
  
  /* Style the footer */
  .footer {

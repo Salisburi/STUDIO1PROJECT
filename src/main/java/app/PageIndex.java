@@ -33,6 +33,7 @@ public class PageIndex implements Handler {
         // Add some Header information
         html = html + "<head>" + 
                "<title>Homepage</title>";
+        html = html + "<meta charset = 'UTF-8'>";
 
         // Add some CSS (external file)
         html = html + "<link rel='stylesheet' type='text/css' href='common.css' />";
@@ -68,23 +69,68 @@ public class PageIndex implements Handler {
         html = html + "<div class='content'>";
 
         // Add HTML for the page content
+        //Content is split into two sections
+        //First section shows the data available and the starting and end years for world pop and global temp
+        //Second section shows the values at each end of the range of values available - also show how many years of data is available (end range - start range get from database)
+        
+        //Make JDBC, globalTemp and population objects
+        globaltemp globaltemp = new globaltemp();
+        population population = new population();
+        JDBCConnection jdbcConnection = new JDBCConnection();
+
+        //Use JDBC method to store all the database values into created objects
+        globaltemp = jdbcConnection.getGlobal();
+        population = jdbcConnection.getPopulation();
+        
+        //First Section
         html = html + """
-            <p>Homepage content</p>
+            <div class = 'data-available-content'>
+
+            <h1 class = 'main-content-heading'>Data Available</h1>
             """;
+        html = html + """
+            <h2>World Population</h2>
+            """;
+        html = html + "<p class='population-year-heading'>Start Year:</p>";
+        html = html + "<p class='population-year-value'>" + population.getStartYear() + "</p>";
+        html = html + "<p class='population-year-heading'>End Year:</p>";
+        html = html + "<p class='population-year-value'>" + population.getEndYear() + "</p>";
+        html = html + "<p class='population-year-heading'>Year Range of Available Data:</p>";
+        html = html + "<p class='population-year-value'>" + population.getYearRange() + "</p>";
 
-        // Get the ArrayList of Strings of all LGAs
-        ArrayList<String> lgaNames = getLGAs2016();
 
-        // Add HTML for the LGA list
-        html = html + "<h1>All 2016 LGAs in the CTG database</h1>" + "<ul>";
+        html = html + """
+            <h2>Global Temperature</h2>
+            """;
+        html = html + "<p class='global-year-heading'>Start Year:</p>";
+        html = html + "<p class='global-year-value'>" + globaltemp.getStartYear() + "</p>";
+        html = html + "<p class='global-year-heading'>End Year:</p>";
+        html = html + "<p class='global-year-value'>" + globaltemp.getEndYear() + "</p>";
+        html = html + "<p class='global-year-heading'>Year Range of Available Data:</p>";
+        html = html + "<p class='global-year-value'>" + globaltemp.getYearRange() + "</p>";
 
-        // Finally we can print out all of the LGAs
-        for (String name : lgaNames) {
-            html = html + "<li>" + name + "</li>";
-        }
+        html = html + "</div>";
+        
+        //Second Section
+        html = html + """
+            <div class = 'pop-temp-values'>
+        """;
 
-        // Finish the List HTML
-        html = html + "</ul>";
+        html = html + "<h1 class = 'main-content-heading'>World Population Number</h1>";
+
+        html = html + "<p class='population-year-heading'>Start Year:</p>";
+        html = html + "<p class='population-year-value'>" + population.getStartPopulation() + "</p>";
+        html = html + "<p class='population-year-heading'>End Year:</p>";
+        html = html + "<p class='population-year-value'>" + population.getEndPopulation() + "</p>";
+
+        html = html + "<h1 class = 'main-content-heading'>Global Land Temperature</h1>";
+
+        html = html + "<p class='global-year-heading'>Start Year:</p>";
+        html = html + "<p class='global-year-value'>" + globaltemp.getStartTemp() + "°C</p>";
+        html = html + "<p class='global-year-heading'>End Year:</p>";
+        html = html + "<p class='global-year-value'>" + globaltemp.getEndTemp() + "°C</p>";
+
+        html = html + "</div>";
 
         // Close Content div
         html = html + "</div>";
@@ -105,57 +151,5 @@ public class PageIndex implements Handler {
         context.html(html);
     }
 
-
-    /**
-     * Get the names of the LGAs in the database.
-     */
-    public ArrayList<String> getLGAs2016() {
-        // Create the ArrayList of LGA objects to return
-        ArrayList<String> lgas = new ArrayList<String>();
-
-        // Setup the variable for the JDBC connection
-        Connection connection = null;
-
-        try {
-            // Connect to JDBC data base
-            connection = DriverManager.getConnection(JDBCConnection.DATABASE);
-
-            // Prepare a new SQL Query & Set a timeout
-            Statement statement = connection.createStatement();
-            statement.setQueryTimeout(30);
-
-            // The Query
-            String query = "SELECT * FROM LGA WHERE year='2016'";
-            
-            // Get Result
-            ResultSet results = statement.executeQuery(query);
-
-            // Process all of the results
-            while (results.next()) {
-                String name16  = results.getString("name");
-
-                // Add the lga object to the array
-                lgas.add(name16);
-            }
-
-            // Close the statement because we are done with it
-            statement.close();
-        } catch (SQLException e) {
-            // If there is an error, lets just pring the error
-            System.err.println(e.getMessage());
-        } finally {
-            // Safety code to cleanup
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                // connection close failed.
-                System.err.println(e.getMessage());
-            }
-        }
-
-        // Finally we return all of the lga
-        return lgas;
-    }
+    
 }

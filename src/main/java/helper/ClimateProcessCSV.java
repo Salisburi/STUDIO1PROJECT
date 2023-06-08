@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.util.Scanner;
+
+import org.eclipse.jetty.server.Iso88591HttpWriter;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -36,13 +39,13 @@ public class ClimateProcessCSV {
 
    // MODIFY these to load/store to/from the correct locations
    private static final String DATABASE = "jdbc:sqlite:database/climate.db";
-   private static final String CSV_FILE = "database/GlobalYearlyLandTempByCountry.csv";
+   private static final String CSV_FILE = "database/GlobalYearlyLandTempByState.csv";
 
 
    public static void main (String[] args) {
       // Load up the Date table
       // This only needs to be done once - uncomment this to reload the Date table
-       loadYears();
+      // loadYears();
 
       // Load the Country Temperature Observations
       loadCountryTemperatures();
@@ -110,10 +113,11 @@ public class ClimateProcessCSV {
             String avgTemp = rowScanner.next();
             String minTemp = rowScanner.next();
             String maxTemp = rowScanner.next();
+            String state = rowScanner.next();
             String rawCountryName = rowScanner.next();
 
             // In this example, we don't have the population, so we'll leave that as zero for now
-            int population = 0;
+            //int population = 0;
             
             // Set a default country code
             String countryCode = "ZZZZ";
@@ -130,6 +134,7 @@ public class ClimateProcessCSV {
             }
 
             // Convert any Latin1 encoded country names to UTF-8
+            String stateName = new String(state.getBytes("ISO-8859-1"), "UTF-8");
             String countryName = new String(rawCountryName.getBytes("ISO-8859-1"), "UTF-8");
             // We now need to look-up the country code from the name
             Statement statement = connection.createStatement();
@@ -145,13 +150,13 @@ public class ClimateProcessCSV {
             statement = connection.createStatement();
 
             // Create Insert Statement
-            query = "INSERT into CountryTempObservation VALUES ("
+            query = "INSERT into StateTempObservationTest VALUES ("
                      + "'" + countryCode + "',"
+                     + "'" + stateName + "',"
                      + year + ","
                      + avgTemp + ","
                      + minTemp + ","
-                     + maxTemp + ","
-                     + population
+                     + maxTemp
                      + ")";
 
             // Execute the INSERT

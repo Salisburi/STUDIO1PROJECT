@@ -18,8 +18,8 @@ import java.sql.Statement;
 public class JDBCConnection {
 
     // Name of database file (contained in database folder)
-    //public static final String DATABASE = "jdbc:sqlite:database/ctg.db";
-     public static final String DATABASE = "jdbc:sqlite:database/climate.db";
+    public static final String DATABASE = "jdbc:sqlite:database/climate.db";
+    // public static final String DATABASE = "jdbc:sqlite:database/climate.db";
 
     /**
      * This creates a JDBC Object so we can keep talking to the database
@@ -28,65 +28,149 @@ public class JDBCConnection {
         System.out.println("Created JDBC Connection Object");
     }
 
-    /**
-     * Get all of the LGAs in the database.
-     * @return
-     *    Returns an ArrayList of LGA objects
-     */
-    public ArrayList<LGA> getLGAs2016() {
-        // Create the ArrayList of LGA objects to return
-        ArrayList<LGA> lgas = new ArrayList<LGA>();
+    // TODO: Add your required methods here
 
-        // Setup the variable for the JDBC connection
+    //Method 1: Returns the year ranges for world pop and global temp
+    public globaltemp getGlobal() {
+        //Create globalTemp object to return - object will contain the years and temp regarding globalYear database
+        globaltemp containerGlobaltemp = new globaltemp();
+
+        //Setup JDBC Connection
         Connection connection = null;
 
         try {
-            // Connect to JDBC data base
+            //Connect to the JDBC Database
             connection = DriverManager.getConnection(DATABASE);
 
-            // Prepare a new SQL Query & Set a timeout
+            //Prepare SQL query & set timeout
             Statement statement = connection.createStatement();
             statement.setQueryTimeout(30);
 
-            // The Query
-            String query = "SELECT * FROM LGA WHERE year='2016'";
-            
-            // Get Result
-            ResultSet results = statement.executeQuery(query);
+            //SQL query
+            String query = "SELECT * FROM GlobalTempObservation"; //Will select the entire table of the GlobalTempObservation from database
 
-            // Process all of the results
+            //Execute query and store result from query
+            ResultSet results = statement.executeQuery(query); //Will execute the above query and store into an "arraylist" results
+
+            //Processing results
+            //We are using the methods inside the globaltemp class to store the values we need, we will use the getter methods in the page files
+            //Iterate through the resultSet, finding max and min years in the year and start and end temps
+
             while (results.next()) {
-                // Lookup the columns we need
-                int code     = results.getInt("code");
-                String name  = results.getString("name");
+                int year = results.getInt("Year");
+                Double temp = results.getDouble("AvgTemperature");
 
-                // Create a LGA Object
-                LGA lga = new LGA(code, name, 2016);
+                //update start and end years
+                if (year < containerGlobaltemp.getStartYear() || containerGlobaltemp.getStartYear() == 0) {
+                    containerGlobaltemp.setStartYear(year);
+                }
 
-                // Add the lga object to the array
-                lgas.add(lga);
+                if (year > containerGlobaltemp.getEndYear()) {
+                    containerGlobaltemp.setEndYear(year);
+                }
+
+                //update start and end temps FIX: GETTING LOWEST VALUE AND HIGHEST, NOT FIRST VALUE AND LAST VALUE
+                if (year == containerGlobaltemp.getStartYear() || containerGlobaltemp.getStartYear() == 0) {
+                    containerGlobaltemp.setStartTemp(temp);
+                }
+
+                if (year == containerGlobaltemp.getEndYear()) {
+                    containerGlobaltemp.setEndTemp(temp);
+                }
             }
 
-            // Close the statement because we are done with it
+            //Close statement
             statement.close();
-        } catch (SQLException e) {
-            // If there is an error, lets just pring the error
+
+        }
+        catch (SQLException e) {
+            //If there is an error, print error
             System.err.println(e.getMessage());
-        } finally {
-            // Safety code to cleanup
+        }
+        finally {
+            //Safety Code
             try {
-                if (connection != null) {
+                if (connection !=null) {
                     connection.close();
                 }
             } catch (SQLException e) {
-                // connection close failed.
+                //connection close failed
                 System.err.println(e.getMessage());
             }
         }
 
-        // Finally we return all of the lga
-        return lgas;
+        //return object
+        return containerGlobaltemp;
     }
 
-    // TODO: Add your required methods here
+    public population getPopulation() {
+        //Create population object to return - object will contain years and population data
+        population population = new population();
+
+        //Setup JDBC Connection
+        Connection connection = null;
+
+        try {
+            //Connect to the JDBC Database
+            connection = DriverManager.getConnection(DATABASE);
+
+            //Prepare SQL query & set timeout
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+
+            //SQL query
+            String query = "SELECT Year, Population FROM WorldPopulation"; //Will select the entire table of the WorldPopulation from database
+
+            //Execute query and store result from query
+            ResultSet results = statement.executeQuery(query); //Will execute the above query and store into an "arraylist" results
+
+            //Processing results
+            //We are using the methods inside the globaltemp class to store the values we need, we will use the getter methods in the page files
+            //Iterate through the resultSet, finding max and min years in the year
+
+            while(results.next()) {
+                int year = results.getInt("Year");
+                long populationvalue = results.getLong("Population");
+
+                //find first and last year - min and max
+                if (year < population.getStartYear() || population.getStartYear() == 0) {
+                    population.setStartYear(year);
+                }
+
+                if (year > population.getEndYear()) {
+                    population.setEndYear(year);
+                }
+
+                //find first and last population
+                if (year == population.getStartYear() || population.getStartYear() == 0) {
+                    population.setStartPopulation(populationvalue);
+                }
+
+                if (year == population.getEndYear()) {
+                    population.setEndPopulation(populationvalue);
+}
+            }
+
+            //Close Statement
+            statement.close();
+        }
+        catch (SQLException e) {
+            //If there is an error, print error
+            System.err.println(e.getMessage());
+        }
+        finally {
+            //Safety Code
+            try {
+                if (connection !=null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                //connection close failed
+                System.err.println(e.getMessage());
+            }
+        }
+        //return object
+        return population;
+    }
+
 }

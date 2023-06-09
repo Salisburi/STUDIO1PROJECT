@@ -6,6 +6,7 @@ public class population {
     private long startPopulation;
     private long endPopulation;
     private int yearRange;
+    private int avgTemperature;
 
     public population() {
         this.startYear = 0;
@@ -13,8 +14,10 @@ public class population {
         this.startPopulation = 0;
         this.endPopulation = 0;
         this.yearRange = 0;
+        this.avgTemperature = 0;
     }
 
+    //Setter Methods
     public void setStartYear(int startYear) {
         this.startYear = startYear;
     }
@@ -30,6 +33,12 @@ public class population {
     public void setEndPopulation(long endPopulation) {
         this.endPopulation = endPopulation;
     }
+
+    public void setAvgTemp(int avgTemperature) {
+        this.avgTemperature = 0;
+    }
+
+    //Getter Methods
 
     public int getStartYear() {
         return startYear;
@@ -47,6 +56,12 @@ public class population {
         return endPopulation;
     }
 
+    public int getAvgTemp() {
+        return avgTemperature;
+    }
+
+
+    //Other methods
     public int getYearRange(){
         yearRange = getEndYear() - getStartYear();
         return yearRange;

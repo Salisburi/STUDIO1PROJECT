@@ -7,7 +7,7 @@ public class globaltemp {
     private double endTemp;
     private int yearRange;
 
-    public  globaltemp() {
+    public globaltemp() {
         this.startYear = 0;
         this.endYear = 0;
         this.startTemp = 0;

@@ -2,17 +2,21 @@ package app;
 
 public class country {
     private String countryCode;
-    private int startYear;
-    private int endYear;
-    private int avgTemp;
+    private int year;
+    private double avgTemp;
     private long countryPopulation;
+    private double tempPercentageChange;
+    private double popPercentageChange;
+    private double correlationValue;
 
     public country() {
         this.countryCode = "ZZZZ";
-        this.startYear = 0;
-        this.endYear = 0;
+        this.year = 0;
         this.avgTemp =0;
         this.countryPopulation =0;
+        this.tempPercentageChange = 0;
+        this.popPercentageChange = 0;
+        this.correlationValue = 0;
     }
 
     //Setter methods
@@ -21,20 +25,28 @@ public class country {
         this.countryCode = countryCode;
     }
 
-    public void setStartYear(int startYear) {
-        this.startYear = startYear;
+    public void setYear(int year) {
+        this.year = year;
     }
 
-    public void setEndYear(int endYear) {
-        this.endYear = endYear;
-    }
-
-    public void setAvgTemp(int avgTemp) {
+    public void setAvgTemp(Double avgTemp) {
         this.avgTemp = avgTemp;
     }
 
     public void setCountryPopulation(long countryPopulation) {
         this.countryPopulation = countryPopulation;
+    }
+
+    public void setTempPercentageChange(Double tempPercentageChange) {
+        this.tempPercentageChange = tempPercentageChange;
+    }
+
+    public void setPopPercentageChange(Double popPercentageChange) {
+        this.popPercentageChange = popPercentageChange;
+    }
+
+    public void setCorrelationValue(Double correlationValue) {
+        this.correlationValue = correlationValue;
     }
 
     //Getter Methods
@@ -43,19 +55,27 @@ public class country {
         return countryCode;
     }
 
-    public int getStartYear() {
-        return startYear;
+    public int getYear() {
+        return year;
     }
 
-    public int getEndYear() {
-        return endYear;
-    }
-
-    public int getAvgTemp() {
+    public double getAvgTemp() {
         return avgTemp;
     }
 
     public long getCountryPopulation() {
         return countryPopulation;
+    }
+
+    public double getTempPercentageChange() {
+        return tempPercentageChange;
+    }
+
+    public double getPopPercentageChange() {
+        return popPercentageChange;
+    }
+
+    public double getCorrelationValue() {
+        return correlationValue;
     }
 }

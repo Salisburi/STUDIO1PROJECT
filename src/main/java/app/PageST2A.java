@@ -134,7 +134,19 @@ public class PageST2A implements Handler {
         html = html + """
             <h1 class = 'main-content-heading'>Results</h1>
             """;
-        
+        //TEST: Create JDBC and Country arrayList
+        JDBCConnection jdbc = new JDBCConnection();
+        ArrayList<country> country = new ArrayList<country>();
+        //Store JDBC method 3 into country arrayList
+        country = jdbc.getCountryArrayList(start_year, end_year);
+        //country now has all the data, iterate and display on webpage
+        html = html + "<h2>Start Year:" + start_year + "</h2>";
+        html = html + "<h2>End Year:" + end_year + "</h2>";
+        html = html + "<ul>";
+        for (country iterateCountry : country) {
+            html = html + "<li>" + iterateCountry.getCorrelationValue() + "</li>";
+        }
+        html = html + "</ul>";
         
             // Close Content div
         html = html + "</div>";

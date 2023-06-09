@@ -30,7 +30,7 @@ public class JDBCConnection {
 
     // TODO: Add your required methods here
 
-    //Method 1: Returns the year ranges for world pop and global temp
+    //Method 1 SUB-TASKA: Returns the year ranges and temp at lowest and highest year value for global
     public globaltemp getGlobal() {
         //Create globalTemp object to return - object will contain the years and temp regarding globalYear database
         globaltemp containerGlobaltemp = new globaltemp();
@@ -103,6 +103,7 @@ public class JDBCConnection {
         return containerGlobaltemp;
     }
 
+    //Method 2 SUB-TASKA: Return the population year ranges and population value at those years
     public population getPopulation() {
         //Create population object to return - object will contain years and population data
         population population = new population();
@@ -173,4 +174,193 @@ public class JDBCConnection {
         return population;
     }
 
+    //Method 3: SUB-TASKB Store values for Region, Temperature Change, Population Change, Correlation in country arrayList
+    public ArrayList<country> getCountryArrayList(String startYear, String endYear) {
+        //Create country ArrayList to return
+        //User input will dictate the query.
+        //ArrayList will contain the Country Code, temperature difference, population difference, % change and correlation
+        //Method will iterate through the resultSet and store each of these values in an object --> object into ArrayList which is returned
+        ArrayList<country> country = new ArrayList<country>();
+
+        //Setup the variable for JDBC connection
+        Connection connection = null;
+        
+        try {
+            //Connect to the JDBC database
+            connection = DriverManager.getConnection(DATABASE);
+
+            //Prepare a new SQL Query & Set a timeout
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+
+            //The Query
+            //Filter the table to only display the following columns based on user inputted year
+            String query = "SELECT " +
+                "CountryCode, " +
+                "TempDiff, " +
+                "PopDiff, " +
+                "(TempDiff / CAST(AvgTemp AS REAL)) * 100 AS TempPercentageChange, " +
+                "(PopDiff / CAST(Population AS REAL)) * 100 AS PopPercentageChange, " +
+                "((TempDiff / CAST(AvgTemp AS REAL)) * 100 * (PopDiff / CAST(Population AS REAL)) * 100) / 100 AS CorrelationValue " +
+                "FROM " +
+                "(SELECT " +
+                "t1.CountryCode, " +
+                "(t2.AvgTemp - t1.AvgTemp) AS TempDiff, " +
+                "(t2.Population - t1.Population) AS PopDiff, " +
+                "t1.AvgTemp, " +
+                "t1.Population " +
+                "FROM " +
+                "CountryTempPopulation AS t1 " +
+                "JOIN " +
+                "CountryTempPopulation AS t2 ON t1.CountryCode = t2.CountryCode " +
+                "WHERE " +
+                "t1.Year = " + startYear + " AND t2.Year = " + endYear + ") AS subquery";
+
+            //Execute query and store result from query
+            ResultSet results = statement.executeQuery(query);
+
+            //Processing results
+            //Use methods inside the country class to store values into an object
+            //The object will be added to the arrayList, continue process through iteration
+
+            while (results.next()) {
+                //Create the country object
+                country tempCountry = new country();
+                //Store values from table into temp vars
+                Double tempAvgTemp = results.getDouble("TempDiff");
+                String tempCountryCode = results.getString("CountryCode");
+                long tempPopulation = results.getLong("PopDiff");
+                Double tempPercentageChange = results.getDouble("TempPercentageChange");
+                Double popPercentageChange = results.getDouble("PopPercentageChange");
+                Double correlationValue = results.getDouble("CorrelationValue");
+
+                //Use setter methods to set values from table into object
+                //Want CountryCode, tempdifference, popdifference, % change and correlation
+                tempCountry.setAvgTemp(tempAvgTemp);
+                tempCountry.setCountryCode(tempCountryCode);
+                tempCountry.setCountryPopulation(tempPopulation);
+                tempCountry.setTempPercentageChange(tempPercentageChange);
+                tempCountry.setPopPercentageChange(popPercentageChange);
+                tempCountry.setCorrelationValue(correlationValue);
+
+                //Add the temp object into the returning arrayList
+                country.add(tempCountry);
+            }
+
+            //Close Statement
+            statement.close();
+        }
+        catch (SQLException e) {
+            //If there is an error, print error
+            System.err.println(e.getMessage());
+        }
+        finally {
+            //Safety Code
+            try {
+                if (connection !=null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                //connection close failed
+                System.err.println(e.getMessage());
+            }
+        }
+        //return arrayList
+        return country;
+    }
+
+    //Method 4: SUB-TASKB Store values for Region, Temperature Change, Population Change, Correlation in world arrayList
+    public ArrayList<world> getWorldArrayList(String startYear, String endYear) {
+        //Create world ArrayList to return
+        //User input will dictate the query
+        //ArrayList will contain the world code, temperature difference, population difference, % change and correlation
+        //Method will iterate through the resultSet and store each of these values in an object --> added to arrayList which is returned
+        ArrayList<world> world = new ArrayList<world>();
+
+        //Setup the variable for JDBC connection
+        Connection connection = null;
+
+        try {
+            //Connect to the JDBC database
+            connection = DriverManager.getConnection(DATABASE);
+
+            //Prepare a new SQL Query & Set a timeout
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+
+            //The Query
+            //Filter the table to only display the following columns based on user inputted year
+            String query = "SELECT " +
+                "CountryCode, " +
+                "TempDiff, " +
+                "PopDiff, " +
+                "(TempDiff / CAST(AvgTemperature AS REAL)) * 100 AS TempPercentageChange, " +
+                "(PopDiff / CAST(Population AS REAL)) * 100 AS PopPercentageChange, " +
+                "((TempDiff / CAST(AvgTemperature AS REAL)) * 100 * (PopDiff / CAST(Population AS REAL)) * 100) / 100 AS CorrelationValue " +
+                "FROM " +
+                "(SELECT " +
+                "t1.CountryCode, " +
+                "(t2.AvgTemperature - t1.AvgTemperature) AS TempDiff, " +
+                "(t2.Population - t1.Population) AS PopDiff, " +
+                "t1.AvgTemperature, " +
+                "t1.Population " +
+                "FROM " +
+                "WorldTempPopulation AS t1 " +
+                "JOIN " +
+                "WorldTempPopulation AS t2 ON t1.CountryCode = t2.CountryCode " +
+                "WHERE " +
+                "t1.Year = " + startYear + " AND t2.Year = " + endYear + ") AS subquery";
+
+            //Execute query and store result from query
+            ResultSet results = statement.executeQuery(query);
+
+            //Processing results
+            //Use methods inside the world class to store values into an object
+            //Object will be added to the arrayList, continue process through iteration
+
+            while (results.next()) {
+                //Create the world object
+                world tempWorld = new world();
+                //Store values from table into temp vars
+                Double tempAvgTemp = results.getDouble("TempDiff");
+                String tempWorldCode = results.getString("CountryCode");
+                long tempPopulation = results.getLong("PopDiff");
+                Double tempPercentageChange = results.getDouble("TempPercentageChange");
+                Double popPercentageChange = results.getDouble("PopPercentageChange");
+                Double correlationValue = results.getDouble("CorrelationValue");
+
+                //Use setter methods to set values from table into object
+                //Want worldCode, tempdifference, popdifference, % change and correlation
+                tempWorld.setAvgTemp(tempAvgTemp);
+                tempWorld.setWorldCode(tempWorldCode);
+                tempWorld.setWorldPopulation(tempPopulation);
+                tempWorld.setTempPercentageChange(tempPercentageChange);
+                tempWorld.setPopPercentageChange(popPercentageChange);
+                tempWorld.setCorrelationValue(correlationValue);
+
+                //Add the temp object into the returning arrayList
+                world.add(tempWorld);
+            }
+
+            //Close Statement
+            statement.close();
+        }
+        catch (SQLException e) {
+            //If there is an error, print error
+            System.err.println(e.getMessage());
+        }
+        finally {
+            //Safety Code
+            try {
+                if (connection !=null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                //connection close failed
+                System.err.println(e.getMessage());
+            }
+        }
+        //Return arrayList
+        return world;
+    }
 }

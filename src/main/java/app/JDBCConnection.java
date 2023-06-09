@@ -175,7 +175,7 @@ public class JDBCConnection {
     }
 
     //Method 3: SUB-TASKB Store values for Region, Temperature Change, Population Change, Correlation in country arrayList
-    public ArrayList<country> getCountryArrayList(String startYear, String endYear) {
+    public ArrayList<country> getCountryArrayList(String startYear, String endYear, String criterion, String sort) {
         //Create country ArrayList to return
         //User input will dictate the query.
         //ArrayList will contain the Country Code, temperature difference, population difference, % change and correlation
@@ -195,6 +195,7 @@ public class JDBCConnection {
 
             //The Query
             //Filter the table to only display the following columns based on user inputted year
+            //If statements to sort query using criterion and sort inputs
             String query = "SELECT " +
                 "CountryCode, " +
                 "TempDiff, " +
@@ -215,6 +216,19 @@ public class JDBCConnection {
                 "CountryTempPopulation AS t2 ON t1.CountryCode = t2.CountryCode " +
                 "WHERE " +
                 "t1.Year = " + startYear + " AND t2.Year = " + endYear + ") AS subquery";
+            
+            // Add sorting conditions based on criterion and sort parameters
+            if (criterion != null && criterion.equals("Temperature")) {
+                query += " ORDER BY TempDiff";
+            } else if (criterion != null && criterion.equals("Population")) {
+                query += " ORDER BY PopDiff";
+            }
+
+            if (sort != null && sort.equals("Ascending")) {
+                query += " ASC";
+            } else if (sort != null && sort.equals("Descending")) {
+                query += " DESC";
+            }
 
             //Execute query and store result from query
             ResultSet results = statement.executeQuery(query);
@@ -270,7 +284,7 @@ public class JDBCConnection {
     }
 
     //Method 4: SUB-TASKB Store values for Region, Temperature Change, Population Change, Correlation in world arrayList
-    public ArrayList<world> getWorldArrayList(String startYear, String endYear) {
+    public ArrayList<world> getWorldArrayList(String startYear, String endYear, String criterion, String sort) {
         //Create world ArrayList to return
         //User input will dictate the query
         //ArrayList will contain the world code, temperature difference, population difference, % change and correlation
@@ -310,6 +324,19 @@ public class JDBCConnection {
                 "WorldTempPopulation AS t2 ON t1.CountryCode = t2.CountryCode " +
                 "WHERE " +
                 "t1.Year = " + startYear + " AND t2.Year = " + endYear + ") AS subquery";
+
+            // Add sorting conditions based on criterion and sort parameters
+            if (criterion != null && criterion.equals("Temperature")) {
+                query += " ORDER BY TempDiff";
+            } else if (criterion != null && criterion.equals("Population")) {
+                query += " ORDER BY PopDiff";
+            }
+
+            if (sort != null && sort.equals("Ascending")) {
+                query += " ASC";
+            } else if (sort != null && sort.equals("Descending")) {
+                query += " DESC";
+            }
 
             //Execute query and store result from query
             ResultSet results = statement.executeQuery(query);

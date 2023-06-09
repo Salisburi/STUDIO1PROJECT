@@ -96,59 +96,102 @@ public class PageST2A implements Handler {
         html = html + "     <input type='number' id='end_year' name='end_year' min='1750' max='2013' pattern='\\d{4}' required title='Please enter a valid year between 1750 and 2013' placeholder='2013'>";
         html = html + "  </div>";
 
+        //Create Dropdown for users to filter results
+
+        html = html + "   <div class='form-group'>";
+        html = html + "      <label for='temp_pop_drop'>Sort By Criterion:</label>";
+        html = html + "      <select id='temp_pop_drop' name='temp_pop_drop'>";
+        html = html + "         <option>Temperature</option>";
+        html = html + "         <option>Population</option>";
+        html = html + "      </select>";
+        html = html + "      <label for='asc_desc_drop'>Sort By:</label>";
+        html = html + "      <select id='asc_desc_drop' name='asc_desc_drop'>";
+        html = html + "         <option>Ascending</option>";
+        html = html + "         <option>Descending</option>";
+        html = html + "      </select>";
+        html = html + "  </div>";
+
         //Add button to submit form
-        html = html + "   <button type='submit' class='btn btn-primary'>Submit Form!</button>";
+        html = html + "   <button type='submit' class='btn btn-primary'>View Results</button>";
 
         html = html + "</form>"; //End Form
 
-        //Get the form data from dropdown list
+        //Get the form data - context.formParam
         //Ensure that there is an option for null
 
         String country_population_drop = context.formParam("country_population_drop");
-        if (country_population_drop == null) {
-            html = html + "<h2><i>No Results</i></h2>";
-        }
-        else {
-            html = html + "<h2><i>User Submitted - " + country_population_drop + " replace with method</i></h2>";
-        }
-
         String start_year = context.formParam("start_year");
-        if (start_year == null || start_year =="") {
-            html = html + "<h2><i>No Results</i></h2>" ;
-        }
-        else {
-            html = html + "<h2><i>User Submitted - " + start_year + " replace with method </i></h2>";
-        }
-
         String end_year = context.formParam("end_year");
-        if (end_year == null || end_year =="") {
-            html = html + "<h2><i>No Results</i></h2>" ;
-        }
-        else {
-            html = html + "<h2><i>User Submitted - " + end_year + " replace with method </i></h2>";
-        }
+        String temp_pop_drop = context.formParam("temp_pop_drop");
+        String asc_desc_drop = context.formParam("asc_desc_drop");
 
-        //Form data is submitted to country_population_drop, start_year and end_year
-        //Use data to form SQL queries
-        
+        //Form data is submitted and assigned to variables
+        html = html + "<div class='results_area'>"; 
         html = html + """
             <h1 class = 'main-content-heading'>Results</h1>
             """;
-        //TEST: Create JDBC and Country arrayList
+        ///Create JDBC, country arrayList and world arrayList
         JDBCConnection jdbc = new JDBCConnection();
         ArrayList<country> country = new ArrayList<country>();
-        //Store JDBC method 3 into country arrayList
-        country = jdbc.getCountryArrayList(start_year, end_year);
-        //country now has all the data, iterate and display on webpage
-        html = html + "<h2>Start Year:" + start_year + "</h2>";
-        html = html + "<h2>End Year:" + end_year + "</h2>";
-        html = html + "<ul>";
-        for (country iterateCountry : country) {
-            html = html + "<li>" + iterateCountry.getCorrelationValue() + "</li>";
-        }
-        html = html + "</ul>";
+        ArrayList<world> world = new ArrayList<world>();
+        //Store JDBC method 3 and 4 into country arrayList and world arrayList
+        country = jdbc.getCountryArrayList(start_year, end_year, temp_pop_drop, asc_desc_drop);
+        world = jdbc.getWorldArrayList(start_year, end_year, temp_pop_drop, asc_desc_drop);
+        //country and world now has all the data, iterate and display on webpage
+        //Create if statements depending on country_population_drop to display which table
+        // Check the value of country_population_drop and create the corresponding table
+    if ("Countries".equals(country_population_drop)) {
+        // Create table for country ArrayList
+        html += "<table>";
+        html += "<tr>";
+        html += "<th>Region Code</th>";
+        html += "<th>Average Temperature Difference</th>";
+        html += "<th>Population Difference</th>";
+        html += "<th>% Average Temperature Difference</th>";
+        html += "<th>% Population Difference</th>";
+        html += "<th>Correlation Value</th>";
+        html += "</tr>";
         
-            // Close Content div
+        for (country c : country) {
+            html += "<tr>";
+            html += "<td>" + c.getCountryCode() + "</td>";
+            html += "<td>" + c.getAvgTemp() + "</td>";
+            html += "<td>" + c.getCountryPopulation() + "</td>";
+            html += "<td>" + c.getTempPercentageChange() + "</td>";
+            html += "<td>" + c.getPopPercentageChange() + "</td>";
+            html += "<td>" + c.getCorrelationValue() + "</td>";
+            html += "</tr>";
+        }
+        
+        html += "</table>";
+    } else if ("World".equals(country_population_drop)) {
+        // Create table for world ArrayList
+        html += "<table>";
+        html += "<tr>";
+        html += "<th>Region Code</th>";
+        html += "<th>Average Temperature Difference</th>";
+        html += "<th>Population Difference</th>";
+        html += "<th>% Average Temperature Difference</th>";
+        html += "<th>% Population Difference</th>";
+        html += "<th>Correlation Value</th>";
+        html += "</tr>";
+        
+        for (world w : world) {
+            html += "<tr>";
+            html += "<td>" + w.getWorldCode() + "</td>";
+            html += "<td>" + w.getAvgTemp() + "</td>";
+            html += "<td>" + w.getWorldPopulation() + "</td>";
+            html += "<td>" + w.getTempPercentageChange() + "</td>";
+            html += "<td>" + w.getPopPercentageChange() + "</td>";
+            html += "<td>" + w.getCorrelationValue() + "</td>";
+            html += "</tr>";
+        }
+        
+        html += "</table>";
+    }
+        html = html + "</div>";
+
+        // Close Content div
         html = html + "</div>";
 
         // Footer

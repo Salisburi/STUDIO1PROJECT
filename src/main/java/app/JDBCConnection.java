@@ -148,7 +148,7 @@ public class JDBCConnection {
 
                 if (year == population.getEndYear()) {
                     population.setEndPopulation(populationvalue);
-}
+                }
             }
 
             //Close Statement

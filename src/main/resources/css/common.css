@@ -72,6 +72,10 @@ img.top-image {
  .global-year-value {
    font-style: italic;
  }
+
+ input:invalid {
+  border-color: red;
+ }
  
  /* Style the footer */
  .footer {

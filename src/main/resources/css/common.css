@@ -3,34 +3,42 @@
    box-sizing: border-box;
 }
 body {
-   font-family: Arial;
-   /* padding: 10px; */
-   background: #f1f1f1;
+  font-family: Arial;
+  background: #ffffff;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
 }
 /* Header (div) formatting */
 .header {
-   padding: 10px;
-   text-align: center;
-   background-color: #cccccc;
-   color: #000000;
+  padding: 5px;
+  text-align: center;
+  background-color: #cccccc;
+  color: #000000;
 }
+
 h1 {
    font-size: 50px;
    font-family: Old Standard TT,serif;
    color: #438c7c;
 }
+
 h3 {
    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
+
 p {
    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
    font-size: medium;
 }
+
 table, th, td {
    border: 1px solid black;
  }
  
- button {
+button {
    background-color: #438c7c;
    border: none;
    color: white;
@@ -43,6 +51,7 @@ table, th, td {
    cursor: pointer;
    border-radius: 10%;
  }
+
 table {
    border-collapse: collapse;
    margin-bottom: 20px;
@@ -63,6 +72,7 @@ table {
  tr:hover {
    background-color: #f5f5f5;
  }
+
 /* Make the logo have a rounded edge */
 img.top-image {
    vertical-align: middle;
@@ -101,12 +111,203 @@ marquee {
  
  /* Style the content */
  .content {
-   background-color: #ddd;
-   padding: 10px;
- }
- 
+  background-color: #ddd;
+  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  flex-direction: column; /* Change the flex-direction to column */
+}
+
+/* PageIndex Section CSS */
+.first-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.second-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px; /* Add some margin to create a gap between sections */
+}
+
+.first-section .section-container p {
+  margin-bottom: 10px;
+}
+
+.first-section .section-container {
+  background-color: #f9f9f9;
+}
+
+.section-container {
+  width: 45%;
+  margin: 10px;
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  text-align: center; /* Center align the content */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Add box shadow */
+}
+
+.section-container h2 {
+  color: #438c7c;
+  font-size: 32px;
+  margin-bottom: 20px;
+  font-family: "Roboto", sans-serif; /* Change the font family */
+  font-style: normal;
+}
+
+.section-container p {
+  font-size: 20px;
+  margin: 8px 0;
+  font-family: "Roboto", sans-serif; /* Change the font family */
+  font-style:normal; /* Add italic style to make it stand out more */
+  margin-top: 15px;
+}
+
+/*PageST2A CSS*/
+.header-ST2A {
+  background-color: #ffffff;
+  padding: 20px;
+  text-align: center;
+}
+
+.header-ST2A h1 {
+  color: #438c7c;
+  font-size: 36px;
+  font-family: "Roboto", sans-serif;
+  margin: 0;
+  padding: 10px;
+}
+
+.first-section-ST2A {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 20px; /* Add margin at the bottom to separate sections */
+}
+
+.second-section-ST2A {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.section-container-ST2A {
+  display: inline-block;
+  margin: 10px;
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  text-align: center; /* Center align the content */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Add box shadow */
+}
+
+.section-container-ST2A h2 {
+  color: #438c7c;
+  font-size: 32px;
+  font-family: "Roboto", sans-serif; /* Change the font family */
+  font-style: normal;
+  margin: auto;
+}
+
+.form-group select,
+.form-group input[type="number"] {
+  width: 150px; /* Adjust the width as desired */
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.form-group {
+  margin-top: 15px;
+}
+
+.form-group select {
+  font-family: "Roboto", sans-serif;
+  /* Add additional styles if needed */
+}
+
+.form-group label {
+  font-family: "Roboto", sans-serif;
+}
+
+.form-group input[type="number"] {
+  font-family: "Roboto", sans-serif;
+  /* Add additional styles if needed */
+}
+
+input:focus,
+select:focus,
+[type="number"]:focus {
+  outline: none; /* Remove default focus outline */
+  border-color: rgb(132, 206, 255);
+  box-shadow: 0 0 5px 2px rgb(132, 206, 255); /* Apply box-shadow effect when focused */
+}
+
+input:invalid {
+  border-color: rgba(255, 0, 0, 0.5);
+  box-shadow: 0 0 5px 2px rgba(255, 0, 0, 0.5); /* Apply red box-shadow effect for invalid input */
+}
+
+.ST2A-button {
+  background-color: #438c7c;
+  font-family: "Roboto", sans-serif;
+  border: none;
+  color: white;
+  padding: 5px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: block; /* Change from inline-block to block */
+  width: 200px; /* Set a specific width for the button */
+  font-size: 16px;
+  margin: 15px auto; /* Use auto margin for centering horizontally */
+  cursor: pointer;
+  border-radius: 20px;
+}
+
+.ST2A-button:hover {
+  box-shadow: 0 0 10px 5px rgba(67, 140, 124, 0.5); /* Apply box-shadow effect on hover */
+}
+
+.ST2A-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 25px 0;
+  font-size: 0.9em;
+  font-family: sans-serif;
+  min-width: 400px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  border: none;
+}
+
+.ST2A-table thead tr {
+  background-color: #009879;
+  color: #ffffff;
+  text-align: left;
+  border-radius: 10px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.ST2A-table th,
+.ST2A-table td {
+  padding: 12px 15px;
+  font-family: 'Roboto', sans-serif;
+  border: none;
+}
+
+.ST2A-table tbody tr:nth-child(even) {
+  background-color: #f3f3f3; /* Update the background color for even rows */
+}
+
+.ST2A-table tbody tr:last-of-type {
+  border-bottom: none;
+}
+
  /* Style the footer */
  .footer {
-   background-color: #cccccc;
-   padding: 10px;
- }
+  background-color: #cccccc;
+  padding: 10px;
+}

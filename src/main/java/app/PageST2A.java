@@ -30,11 +30,14 @@ public class PageST2A implements Handler {
         // Create a simple HTML webpage in a String
         String html = "<html>";
 
+        //Wrapper div
+        html = html + "<div class='wrapper'>";
         // Add some Head information
         html = html + "<head>" + 
                "<title>Subtask 2.1</title>";
                html = html + "<meta charset = 'UTF-8'>";
-
+        //Add Google Fonts Link For Roboto
+        html = html + "<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto'>";
         // Add some CSS (external file)
         html = html + "<link rel='stylesheet' type='text/css' href='common.css' />";
         html = html + "</head>";
@@ -65,8 +68,8 @@ public class PageST2A implements Handler {
 
         // Add header content block
         html = html + """
-            <div class='header'>
-            <h1 class = 'main-content-heading'>Temperature and Population by World/Country</h1>
+            <div class='header-ST2A'>
+            <h1>Temperature and Population by World/Country</h1>
             </div>
         """;
 
@@ -78,6 +81,11 @@ public class PageST2A implements Handler {
         //Second ask users to enter start and end year in textbox
         //Third make results table displaying Region|Temperature Change|Population Change|Correlation?
 
+        //First section
+        html = html + "<div class='first-section-ST2A'>";
+        //Make section-container for inputs
+        html = html + "<div class='section-container-ST2A'>";
+        html = html + "<h2>Filters</h2>";
         //Form 1: Take user inputs to send to database
         html = html + "<form action ='/page2A.html' method = 'post'>"; //Creates form element with method post, data is from this html file
         
@@ -115,9 +123,11 @@ public class PageST2A implements Handler {
         html = html + "  </div>";
 
         //Add button to submit form
-        html = html + "   <button type='submit' class='btn btn-primary'>View Results</button>";
+        html = html + "  <button type='submit' class='ST2A-button'>View Results</button>";
 
         html = html + "</form>"; //End Form
+        html = html + "</div>"; //End section-container
+        html = html + "</div>"; //End first-section
 
         //Get the form data - context.formParam
         //Ensure that there is an option for null
@@ -130,9 +140,9 @@ public class PageST2A implements Handler {
 
         //Form data is submitted and assigned to variables
         html = html + "<div class='results_area'>"; 
-        html = html + """
-            <h1 class = 'main-content-heading'>Results</h1>
-            """;
+
+        html = html + "<div class='second-section-ST2A'>";
+        html = html + "<div class='section-container-ST2A'>";
         ///Create JDBC, country arrayList and world arrayList
         JDBCConnection jdbc = new JDBCConnection();
         ArrayList<country> country = new ArrayList<country>();
@@ -145,17 +155,20 @@ public class PageST2A implements Handler {
         // Check the value of country_population_drop and create the corresponding table
     if ("Countries".equals(country_population_drop)) {
         // Create table for country ArrayList
-        html += "<table>";
+        html += "<table class='ST2A-table'>";
+        html += "<thead>";
         html += "<tr>";
         html += "<th>Region Code</th>";
-        html += "<th>Average Temperature Difference</th>";
+        html += "<th>Average Temperature Difference \u00B0C</th>";
         html += "<th>Population Difference</th>";
         html += "<th>% Average Temperature Difference</th>";
         html += "<th>% Population Difference</th>";
         html += "<th>Correlation Value</th>";
         html += "</tr>";
+        html += "</thead>";
         
         for (country c : country) {
+            html += "<tbody>";
             html += "<tr>";
             html += "<td>" + c.getCountryCode() + "</td>";
             html += "<td>" + c.getAvgTemp() + "</td>";
@@ -164,12 +177,14 @@ public class PageST2A implements Handler {
             html += "<td>" + c.getPopPercentageChange() + "</td>";
             html += "<td>" + c.getCorrelationValue() + "</td>";
             html += "</tr>";
+            html += "</tbody>";
         }
         
         html += "</table>";
     } else if ("World".equals(country_population_drop)) {
         // Create table for world ArrayList
-        html += "<table>";
+        html += "<table class='ST2A-table'>";
+        html += "<thead>";
         html += "<tr>";
         html += "<th>Region Code</th>";
         html += "<th>Average Temperature Difference</th>";
@@ -178,8 +193,10 @@ public class PageST2A implements Handler {
         html += "<th>% Population Difference</th>";
         html += "<th>Correlation Value</th>";
         html += "</tr>";
+        html += "</thead>";
         
         for (world w : world) {
+            html += "<tbody>";
             html += "<tr>";
             html += "<td>" + w.getWorldCode() + "</td>";
             html += "<td>" + w.getAvgTemp() + "</td>";
@@ -188,21 +205,45 @@ public class PageST2A implements Handler {
             html += "<td>" + w.getPopPercentageChange() + "</td>";
             html += "<td>" + w.getCorrelationValue() + "</td>";
             html += "</tr>";
+            html += "</tbody>";
         }
         
         html += "</table>";
     }
-        html = html + "</div>";
+        html = html + "</div>"; //End section-container
+        html = html + "</div>"; //End second section
+        html = html + "</div>"; //End results area
 
         // Close Content div
         html = html + "</div>";
 
         // Footer
         html = html + """
+            <div style='background-color: #438c7c; height: 320px;'>
+            <div style='background-color: #438c7c; padding-bottom: 150px;'>
+            <div style='float: left; width: 50%; font-size:large;'>
+                <center><h2 style='color: #f2f2f2; font-weight: bold;'>Main Menu</h2>
+                <a href='/' style='color: #f2f2f2;'>Home</a><br><br>
+                <a href='mission.html' style='color: #f2f2f2;'>Our Mission</a><br><br>
+                <a href='page2A.html' style='color: #f2f2f2;'>Sub Task 2.A</a><br><br>
+                <a href='page2B.html' style='color: #f2f2f2;'>Sub Task 2.B</a><br><br>
+                <a href='page3A.html' style='color: #f2f2f2;'>Sub Task 3.A</a><br><br>
+                <a href='page3B.html' style='color: #f2f2f2;'>Sub Task 3.B</a><br><br>
+                </center>
+            </div>
+            <div style='width: 50%; margin-left: 50%; padding-top: 70px;'>
+                <center><img src='logo.png' alt='Rmit logo' width='300' height='100'></center>
+            </div>
+        </div>
+                """;
+        html = html + """
             <div class='footer'>
-                <p>COSC2803 - Studio Project Starter Code (Apr23)</p>
+                <p>Programming Studio 1 Project(June 2023)</p>
             </div>
         """;
+
+        //End Wrapper
+        html = html + "</div>";
 
         // Finish the HTML webpage
         html = html + "</body>" + "</html>";

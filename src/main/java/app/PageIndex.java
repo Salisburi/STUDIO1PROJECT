@@ -30,11 +30,15 @@ public class PageIndex implements Handler {
         // Create a simple HTML webpage in a String
         String html = "<html>";
 
+        //Create wrapper
+        html = html + "<div class='wrapper'>";
+        
         // Add some Header information
         html = html + "<head>" + 
                "<title>Homepage</title>";
         html = html + "<meta charset = 'UTF-8'>";
-
+        //Add Google Fonts Link For Roboto
+        html = html + "<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto'>";
         // Add some CSS (external file)
         html = html + "<link rel='stylesheet' type='text/css' href='common.css' />";
         html = html + "</head>";
@@ -81,64 +85,77 @@ public class PageIndex implements Handler {
         population = jdbcConnection.getPopulation();
         
         //First Section
-        html = html + """
-            <div class = 'data-available-content'>
+        html = html + "<div class = 'first-section'>";
 
-            <h1 class = 'main-content-heading'>Data Available</h1>
-            """;
+        html = html + "<div class='section-container'>";
         html = html + """
             <h2>World Population</h2>
             """;
-        html = html + "<p class='population-year-heading'>Start Year:</p>";
-        html = html + "<p class='population-year-value'>" + population.getStartYear() + "</p>";
-        html = html + "<p class='population-year-heading'>End Year:</p>";
-        html = html + "<p class='population-year-value'>" + population.getEndYear() + "</p>";
-        html = html + "<p class='population-year-heading'>Year Range of Available Data:</p>";
-        html = html + "<p class='population-year-value'>" + population.getYearRange() + "</p>";
+        html = html + "<p class='population-year-range'>Year Range of Available Data: " + population.getYearRange() + " Years</p>";
+        html = html + "<p class='population-year-start'>Start Year: " + population.getStartYear() + "</p>";
+        html = html + "<p class='population-year-end'>End Year: " + population.getEndYear() + "</p>";
+        html = html + "</div>";
 
-
+        html = html + "<div class='section-container'>";
         html = html + """
             <h2>Global Temperature</h2>
             """;
-        html = html + "<p class='global-year-heading'>Start Year:</p>";
-        html = html + "<p class='global-year-value'>" + globaltemp.getStartYear() + "</p>";
-        html = html + "<p class='global-year-heading'>End Year:</p>";
-        html = html + "<p class='global-year-value'>" + globaltemp.getEndYear() + "</p>";
-        html = html + "<p class='global-year-heading'>Year Range of Available Data:</p>";
-        html = html + "<p class='global-year-value'>" + globaltemp.getYearRange() + "</p>";
-
+        html = html + "<p class='global-year-range'>Year Range of Available Data: " + globaltemp.getYearRange() + " Years</p>";
+        html = html + "<p class='global-year-start'>Start Year: " + globaltemp.getStartYear() + "</p>";
+        html = html + "<p class='global-year-end'>End Year: " + globaltemp.getEndYear() + "</p>";
         html = html + "</div>";
+
+        html = html + "</div>"; // end first section
         
         //Second Section
         html = html + """
-            <div class = 'pop-temp-values'>
+            <div class = 'second-section'>
         """;
 
-        html = html + "<h1 class = 'main-content-heading'>World Population Number</h1>";
-
-        html = html + "<p class='population-year-heading'>Start Year:</p>";
-        html = html + "<p class='population-year-value'>" + population.getStartPopulation() + "</p>";
-        html = html + "<p class='population-year-heading'>End Year:</p>";
-        html = html + "<p class='population-year-value'>" + population.getEndPopulation() + "</p>";
-
-        html = html + "<h1 class = 'main-content-heading'>Global Land Temperature</h1>";
-
-        html = html + "<p class='global-year-heading'>Start Year:</p>";
-        html = html + "<p class='global-year-value'>" + globaltemp.getStartTemp() + "°C</p>";
-        html = html + "<p class='global-year-heading'>End Year:</p>";
-        html = html + "<p class='global-year-value'>" + globaltemp.getEndTemp() + "°C</p>";
-
+        html = html + "<div class='section-container'>";
+        html = html + "<h2>World Population Number</h2>";
+        html = html + "<p class='population-year-start'>Start Year: " + population.getStartPopulation() + " People</p>";
+        html = html + "<p class='population-year-end'>End Year: " + population.getEndPopulation() + " People</p>";
         html = html + "</div>";
+
+        html = html + "<div class='section-container'>";
+        html = html + "<h2>Global Land Temperature</h2>";
+        html = html + "<p class='global-year-start'>Start Year: " + globaltemp.getStartTemp() + " °C</p>";
+        html = html + "<p class='global-year-end'>End Year: " + globaltemp.getEndTemp() + " °C</p>";
+        html = html + "</div>";
+
+        html = html + "</div>"; //end second section
 
         // Close Content div
         html = html + "</div>";
 
         // Footer
         html = html + """
+            <div style='background-color: #438c7c; height: 320px;'>
+            <div style='background-color: #438c7c; padding-bottom: 150px;'>
+            <div style='float: left; width: 50%; font-size:large;'>
+                <center><h2 style='color: #f2f2f2; font-weight: bold;'>Main Menu</h2>
+                <a href='/' style='color: #f2f2f2;'>Home</a><br><br>
+                <a href='mission.html' style='color: #f2f2f2;'>Our Mission</a><br><br>
+                <a href='page2A.html' style='color: #f2f2f2;'>Sub Task 2.A</a><br><br>
+                <a href='page2B.html' style='color: #f2f2f2;'>Sub Task 2.B</a><br><br>
+                <a href='page3A.html' style='color: #f2f2f2;'>Sub Task 3.A</a><br><br>
+                <a href='page3B.html' style='color: #f2f2f2;'>Sub Task 3.B</a><br><br>
+                </center>
+            </div>
+            <div style='width: 50%; margin-left: 50%; padding-top: 70px;'>
+                <center><img src='logo.png' alt='Rmit logo' width='300' height='100'></center>
+            </div>
+        </div>
+                """;
+        html = html + """
             <div class='footer'>
-                <p>COSC2803 - Studio Project Starter Code (Apr23)</p>
+                <p>Programming Studio 1 Project(June 2023)</p>
             </div>
         """;
+
+        //End wrapper
+        html = html + "</div>";
 
         // Finish the HTML webpage
         html = html + "</body>" + "</html>";

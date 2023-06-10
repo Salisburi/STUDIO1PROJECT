@@ -42,11 +42,17 @@ public class PageST2A implements Handler {
         // Add the body
         html = html + "<body>";
 
+        //Start of Header
+        html = html + "<div style='background-color: #438c7c;'>";
+        html = html + "<marquee><b>This section will portray any notice or any requests or any news!!</b></marquee>";
+               
+        html = html + "<center><a href='/'><img src='logo.png' alt='Rmit logo' width='200' height='70'></a></center><br>";
+               
         // Add the topnav
         // This uses a Java v15+ Text Block
         html = html + """
             <div class='topnav'>
-                <a href='/'>Homepage</a>
+                <a href='/'>Home</a>
                 <a href='mission.html'>Our Mission</a>
                 <a href='page2A.html'>Sub Task 2.A</a>
                 <a href='page2B.html'>Sub Task 2.B</a>
@@ -54,21 +60,18 @@ public class PageST2A implements Handler {
                 <a href='page3B.html'>Sub Task 3.B</a>
             </div>
         """;
+               
+        html = html + "</div>";
 
         // Add header content block
         html = html + """
             <div class='header'>
-                <h1>Subtask 2.A</h1>
+            <h1 class = 'main-content-heading'>Temperature and Population by World/Country</h1>
             </div>
         """;
 
         // Add Div for page Content
         html = html + "<div class='content'>";
-
-        // Add HTML for the page content
-        html = html + """
-            <h1 class = 'main-content-heading'>Temperature and Population by World/Country</h1>
-            """;
         
         //Add HTML for web Form
         //First ask user to select countries or world

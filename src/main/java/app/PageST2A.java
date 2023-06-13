@@ -96,11 +96,9 @@ public class PageST2A implements Handler {
         html = html + "         <option>Countries</option>";
         html = html + "         <option>World</option>";
         html = html + "      </select>";
-        html = html + "   </div>";
 
         //Create TextBox for users to be able to input a year between 1750 and 2013 | NOTE: CAN MAKE METHOD IN JDBCONNECTION IF HAVE TIME LATER 
         //Use titles to display error message | CSS for invalid inputs to change textbox to red
-        html = html + "   <div class='form-group'>";
         html = html + "     <label for='start_year'>Start Year:</label>";
         html = html + "     <input type='number' id='start_year' name='start_year' min='1750' max='2013' pattern='\\d{4}' required title='Please enter a valid year between 1750 and 2013' placeholder='1750'>";
         html = html + "     <label for='end_year'>End Year:</label>";
@@ -125,6 +123,7 @@ public class PageST2A implements Handler {
         //Add button to submit form
         html = html + "  <button type='submit' class='ST2A-button'>View Results</button>";
 
+        //Closing divs
         html = html + "</form>"; //End Form
         html = html + "</div>"; //End section-container
         html = html + "</div>"; //End first-section
@@ -143,16 +142,20 @@ public class PageST2A implements Handler {
 
         html = html + "<div class='second-section-ST2A'>";
         html = html + "<div class='section-container-ST2A'>";
+
         ///Create JDBC, country arrayList and world arrayList
         JDBCConnection jdbc = new JDBCConnection();
         ArrayList<country> country = new ArrayList<country>();
         ArrayList<world> world = new ArrayList<world>();
+
         //Store JDBC method 3 and 4 into country arrayList and world arrayList
         country = jdbc.getCountryArrayList(start_year, end_year, temp_pop_drop, asc_desc_drop);
         world = jdbc.getWorldArrayList(start_year, end_year, temp_pop_drop, asc_desc_drop);
+
         //country and world now has all the data, iterate and display on webpage
         //Create if statements depending on country_population_drop to display which table
         // Check the value of country_population_drop and create the corresponding table
+
     if ("Countries".equals(country_population_drop)) {
         // Create table for country ArrayList
         html += "<table class='ST2A-table'>";

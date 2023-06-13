@@ -174,7 +174,7 @@ public class JDBCConnection {
         return population;
     }
 
-    //Method 3: SUB-TASKB Store values for Region, Temperature Change, Population Change, Correlation in country arrayList
+    //Method 3: Level2A Store values for Region, Temperature Change, Population Change, Correlation in country arrayList
     public ArrayList<country> getCountryArrayList(String startYear, String endYear, String criterion, String sort) {
         //Create country ArrayList to return
         //User input will dictate the query.
@@ -283,7 +283,7 @@ public class JDBCConnection {
         return country;
     }
 
-    //Method 4: SUB-TASKB Store values for Region, Temperature Change, Population Change, Correlation in world arrayList
+    //Method 4: Level2A Store values for Region, Temperature Change, Population Change, Correlation in world arrayList
     public ArrayList<world> getWorldArrayList(String startYear, String endYear, String criterion, String sort) {
         //Create world ArrayList to return
         //User input will dictate the query

@@ -119,12 +119,12 @@ public class PageST3A implements Handler {
         //Add radio buttons and respective filters - IF HAVE TIME MAYBE PUT JAVACRIPT THINGS IN
         //Population Select
         html = html + "   <div class='form-group'>";
-        html = html + "     <input type='radio' id='population_select' name='population_select' value='population_true'>";
+        html = html + "     <input type='checkbox' id='population_select' name='population_select' value='population_true'>";
         html = html + "     <label for='population_select'>Population Range:</label>";
         html = html + "     <input type='number' id='population_start_range' name='population_start_range' required title='Please enter a valid number'>";
         html = html + "     <input type='number' id='population_end_range' name='population_end_range' required title='Please enter a valid number'>";
 
-        html = html + "     <input type ='radio' id='avg_temp_select' name='avg_temp_select' value='temp_true'>";
+        html = html + "     <input type ='checkbox' id='avg_temp_select' name='avg_temp_select' value='temp_true'>";
         html = html + "     <label for='avg_temp_select'>Average Temperature Range:</label>";
         html = html + "     <input type='number' id='temperature_start_range' name='temperature_start_range' required title='Please enter a valid number'>";
         html = html + "     <input type='number' id='temperature_end_range' name='temperature_end_range' required title='Please enter a valid number'>";
@@ -175,28 +175,30 @@ public class PageST3A implements Handler {
         String asc_desc_drop = context.formParam("asc_desc_drop");
 
         //Console print variables - TESTED GETTING VALUES :) 
-        /*
-        System.out.println(geographic_region_drop);
-        System.out.println(starting_year);
-        System.out.println(time_period);
+        
+        //System.out.println(geographic_region_drop);
+        //System.out.println(starting_year);
+        //System.out.println(time_period);
 
-        System.out.println(population_select);
-        System.out.println(population_start_range);
-        System.out.println(population_end_range);
+        //System.out.println(population_select); //Returns null if not selected
+        //System.out.println(population_start_range);
+        //System.out.println(population_end_range);
 
-        System.out.println(avg_temp_select);
-        System.out.println(temperature_start_range);
-        System.out.println(temperature_end_range);
+        //System.out.println(avg_temp_select); //Returns null if not selected
+        //System.out.println(temperature_start_range);
+        //System.out.println(temperature_end_range);
 
-        System.out.println(criterion_select);
-        System.out.println(asc_desc_drop);
-        */
+        //System.out.println(criterion_select);
+        //System.out.println(asc_desc_drop);
+        
 
         //Form data is submitted and assigned to variablews
         html = html + "<div class='results_area'>"; 
         html = html + "<div class='second-section-ST2A'>";
         html = html + "<div class='section-container-ST2A'>";
         //Stuff goes below here thanks -DELETE AFTER PLEASE
+
+        //Create JDBC object, ...
 
         //Above here thanks -DELETE AFTER PLEASE
         html = html + "</div>"; //End section-container

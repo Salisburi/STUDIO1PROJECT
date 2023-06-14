@@ -9,6 +9,7 @@ import org.eclipse.jetty.server.Iso88591HttpWriter;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -48,7 +49,7 @@ public class ClimateProcessCSV {
       // loadYears();
 
       // Load the Country Temperature Observations
-      loadCountryTemperatures();
+      loadTemperatures();
 
       return;
    }
@@ -80,93 +81,91 @@ public class ClimateProcessCSV {
       }
    }
 
-   public static void loadCountryTemperatures() {
+   public static void loadTemperatures() {
       // JDBC Database Object
       Connection connection = null;
-
+  
       // We need some error handling.
       try {
-         // Open A CSV File to process, one line at a time
-         // CHANGE THIS to process a different file
-         Scanner lineScanner = new Scanner(new File(CSV_FILE), StandardCharsets.UTF_8);
-
-         // Read the first line of "headings"
-         String header = lineScanner.nextLine();
-         System.out.println("Heading row" + header + "\n");
-
-         // Setup JDBC
-         // Connect to JDBC database
-         connection = DriverManager.getConnection(DATABASE);
-
-         // Read each line of the CSV
-         int row = 1;
-         while (lineScanner.hasNext()) {
-            // Always get scan by line
-            String line = lineScanner.nextLine();
-            
-            // Create a new scanner for this line to delimit by commas (,)
-            Scanner rowScanner = new Scanner(line);
-            rowScanner.useDelimiter(",");
-
-            // Get all of the columns in order
-            String year = rowScanner.next();
-            String avgTemp = rowScanner.next();
-            String minTemp = rowScanner.next();
-            String maxTemp = rowScanner.next();
-            String state = rowScanner.next();
-            String rawCountryName = rowScanner.next();
-
-            // In this example, we don't have the population, so we'll leave that as zero for now
-            //int population = 0;
-            
-            // Set a default country code
-            String countryCode = "ZZZZ";
-
-            // Some error handling
-            if (avgTemp.equals("")) {
-               avgTemp = "0";
-            }
-            if (minTemp.equals("")) {
-               minTemp = "0";
-            }
-            if (maxTemp.equals("")) {
-               maxTemp = "0";
-            }
-
-            // Convert any Latin1 encoded country names to UTF-8
-            String stateName = new String(state.getBytes("ISO-8859-1"), "UTF-8");
-            String countryName = new String(rawCountryName.getBytes("ISO-8859-1"), "UTF-8");
-            // We now need to look-up the country code from the name
-            Statement statement = connection.createStatement();
-            String query = "SELECT * from Country WHERE CountryName = \"" + countryName + "\"";
-            System.out.println("Looking up: " + query);
-            ResultSet results = statement.executeQuery(query);
-            if(results.next()) {
-               countryCode = results.getString("CountryCode");
-            }
-
-            // Now we can insert the entry into the CountryTempObservation tabe
-            // Prepare a new SQL Query & Set a timeout
-            statement = connection.createStatement();
-
-            // Create Insert Statement
-            query = "INSERT into StateTempObservationTest VALUES ("
-                     + "'" + countryCode + "',"
-                     + "'" + stateName + "',"
-                     + year + ","
-                     + avgTemp + ","
-                     + minTemp + ","
-                     + maxTemp
-                     + ")";
-
-            // Execute the INSERT
-            System.out.println("Executing: " + query);
-            statement.execute(query);
-         }
-
+          // Open A CSV File to process, one line at a time
+          // CHANGE THIS to process a different file
+          Scanner lineScanner = new Scanner(new File(CSV_FILE), StandardCharsets.UTF_8);
+  
+          // Read the first line of "headings"
+          String header = lineScanner.nextLine();
+          System.out.println("Heading row" + header + "\n");
+  
+          // Setup JDBC
+          // Connect to JDBC database
+          connection = DriverManager.getConnection(DATABASE);
+  
+          // Read each line of the CSV
+          int row = 1;
+          while (lineScanner.hasNext()) {
+              // Always get scan by line
+              String line = lineScanner.nextLine();
+  
+              // Create a new scanner for this line to delimit by commas (,)
+              Scanner rowScanner = new Scanner(line);
+              rowScanner.useDelimiter(",");
+  
+              // Get all of the columns in order
+              String year = rowScanner.next();
+              String avgTemp = rowScanner.next();
+              String minTemp = rowScanner.next();
+              String maxTemp = rowScanner.next();
+              String state = rowScanner.next();
+              String rawCountryName = rowScanner.next();
+  
+              // In this example, we don't have the population, so we'll leave that as zero for now
+              //int population = 0;
+  
+              // Set a default country code
+              String countryCode = "ZZZZ";
+  
+              // Some error handling
+              if (avgTemp.equals("")) {
+                  avgTemp = "0";
+              }
+              if (minTemp.equals("")) {
+                  minTemp = "0";
+              }
+              if (maxTemp.equals("")) {
+                  maxTemp = "0";
+              }
+  
+              // Convert any Latin1 encoded country names to UTF-8
+              String stateName = new String(state.getBytes("ISO-8859-1"), "UTF-8");
+              String countryName = new String(rawCountryName.getBytes("ISO-8859-1"), "UTF-8");
+              // We now need to look-up the country code from the name
+              PreparedStatement preparedStatement = connection.prepareStatement("SELECT * from Country WHERE CountryName = ?");
+              preparedStatement.setString(1, countryName);
+              System.out.println("Looking up: " + preparedStatement.toString());
+              ResultSet results = preparedStatement.executeQuery();
+              if (results.next()) {
+                  countryCode = results.getString("CountryCode");
+              }
+  
+              // Now we can insert the entry into the CountryTempObservation table
+              // Prepare a new PREPARED SQL query & Set a timeout
+              preparedStatement = connection.prepareStatement("INSERT into StateTempObservationTest VALUES (?, ?, ?, ?, ?, ?)");
+  
+              // Set the values for the prepared statement
+              preparedStatement.setString(1, countryCode);
+              preparedStatement.setString(2, stateName);
+              preparedStatement.setString(3, year);
+              preparedStatement.setString(4, avgTemp);
+              preparedStatement.setString(5, minTemp);
+              preparedStatement.setString(6, maxTemp);
+  
+              // Execute the INSERT
+              System.out.println("Executing: " + preparedStatement.toString());
+              preparedStatement.execute();
+          }
       } catch (Exception e) {
-         e.printStackTrace();
+          e.printStackTrace();
       }
-   }
+  }
+  
 
 }

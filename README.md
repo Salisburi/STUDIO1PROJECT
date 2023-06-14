@@ -29,3 +29,23 @@ GeoRegion Type | Country Code | State | Year Range | AvgTemp | Difference in Avg
 
 Table City:
 GeoRegion Type | CountryCode | City | Year Range | AvgTemp | Difference in AvgTemp
+
+UPDATE 1: THIS IS THE BASIS OF THE QUERY FOR ALL THA TABLES ADSHLKSAHDLKASD
+SELECT
+  c.CountryCode,
+  t.StartingYear,
+  AVG(c.AvgTemp) AS AverageTemperature
+FROM (
+  SELECT
+    CountryCode,
+    CAST((Year / 10) * 10 AS INTEGER) AS StartingYear,
+    AvgTemp,
+    (ROW_NUMBER() OVER(PARTITION BY CountryCode ORDER BY Year) - 1) / 2 AS RowNum
+  FROM CountryTempPopulation
+  WHERE Year >= 1750 AND Year <= 2013
+) t
+JOIN CountryTempPopulation c ON c.CountryCode = t.CountryCode AND c.Year >= t.StartingYear AND c.Year < t.StartingYear + 20
+WHERE t.StartingYear IN (1750, 1850, 1930) -- Replace with user-provided starting years
+GROUP BY t.CountryCode, t.StartingYear;
+
+This uses the CountryTempPopulation Table as an example - Change it for the other tables + add necessary filters

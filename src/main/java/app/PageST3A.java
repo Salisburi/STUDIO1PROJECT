@@ -199,6 +199,37 @@ public class PageST3A implements Handler {
         //Stuff goes below here thanks -DELETE AFTER PLEASE
 
         //Create JDBC object, ...
+        JDBCConnection jdbc = new JDBCConnection();
+        ArrayList<country> country = new ArrayList<country>();
+
+        //Store JDBC methods into arrayList
+        country = jdbc.getGeoCountryArrayList(starting_year, time_period, population_start_range, population_end_range, temperature_start_range, temperature_end_range, criterion_select, asc_desc_drop, population_select, avg_temp_select);
+
+        //Test create table for country ArrayList
+        html += "<table class = 'ST2A-table'>";
+        html += "<thead>";
+        html += "<tr>";
+        html += "<th>Region Code</th>";
+        html += "<th>Starting Year \u00B0C</th>";
+        html += "<th>Time Period</th>";
+        html += "<th>Average Temperature</th>";
+        html += "<th>Average Temperature Difference</th>";
+        html += "</tr>";
+        html += "</thead>";
+
+        html += "<tbody>";
+        for (country c : country) {
+            html += "<tr>";
+            html += "<td>" + c.getCountryCode() + "</td>";
+            html += "<td>" + c.getYear() + "</td>";
+            html += "<td>" + c.getTimePeriod() + "</td>";
+            html += "<td>" + c.getAvgTemp() + "</td>";
+            html += "<td>" + c.getDiffTemp() + "</td>";
+            html += "</tr>";
+            html += "</tbody>";
+        }
+
+        html += "</table>";
 
         //Above here thanks -DELETE AFTER PLEASE
         html = html + "</div>"; //End section-container

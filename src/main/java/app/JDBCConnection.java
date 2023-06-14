@@ -390,4 +390,109 @@ public class JDBCConnection {
         //Return arrayList
         return world;
     }
+
+    //Method 5: Level3A Store values for CountryCode, Starting Year, Time Period, Average Temperature, Difference in Average Temperature - COUNTRY GEO
+    public ArrayList<country> getGeoCountryArrayList(String startingYears, String timePeriod, String populationStart, String populationEnd, String avgTempStart, String avgTempEnd, String criterion, String sort, String populationSelect, String tempSelect) {
+        //Create country ArrayList to return
+        //User input will dictate the query
+        //ArrayList will contain CountryCode, Starting Year, Time Period, Average Temperature, Average Temperature Difference
+        //Method will iterate through the resultSet and store each of these values in an object --> added to arrayList which is returned
+        ArrayList<country> country = new ArrayList<country>();
+
+        //Setup the variable for JDBC connection
+        Connection connection = null;
+
+        try {
+            //Connect to the JDBC database
+            connection = DriverManager.getConnection(DATABASE);
+
+            //Prepare a new SQL Query & Set a timeout
+            Statement statement = connection.createStatement();
+            statement.setQueryTimeout(30);
+
+            //The Query
+            //FIXME: NEED TO CONCATENATE WITH AN IF STATEMENTS FOR THE POPULATION AND TEMP FILTERS OTHERWISE YEARS < 1960 DON'T WORK
+            String query = "SELECT " +
+                "c.CountryCode, " +
+                "t.StartingYear, " +
+                timePeriod + " AS TimePeriod, " +
+                "AVG(c.AvgTemp) AS AverageTemperature, " +
+                "AVG(c.AvgTemp) - LAG(AVG(c.AvgTemp)) OVER(PARTITION BY c.CountryCode ORDER BY t.StartingYear) AS DifferenceAverageTemperature " +
+                "FROM " +
+                "(SELECT " +
+                "CountryCode, " +
+                "CAST((Year / 10) * 10 AS INTEGER) AS StartingYear, " +
+                "AvgTemp, " +
+                "(ROW_NUMBER() OVER(PARTITION BY CountryCode ORDER BY Year) - 1) / 2 AS RowNum " +
+                "FROM CountryTempPopulation " +
+                "WHERE Year >= 1750 AND Year <= 2013 " +
+                "AND Population >= " + populationStart + " AND Population <= " + populationEnd + " " +
+                "AND AvgTemp >= " + avgTempStart + " AND AvgTemp <= " + avgTempEnd + ") t " +
+                "JOIN CountryTempPopulation c ON c.CountryCode = t.CountryCode AND c.Year >= t.StartingYear AND c.Year < t.StartingYear + " + timePeriod + " " +
+                "WHERE t.StartingYear IN (" + startingYears + ") " +
+                "GROUP BY t.CountryCode, t.StartingYear";
+
+                //Add sorting conditions based on criterion and sort parameters
+                if (criterion !=null && criterion.equals("Region Code")) {
+                    query += " ORDER BY c.CountryCode";
+                } else if (criterion !=null && criterion.equals("Average Temperature")) {
+                    query += " ORDER BY c.AvgTemp";
+                } else if (criterion !=null && criterion.equals("Difference in Average Temperature")) {
+                    query += " ORDER BY DifferenceAverageTemperature";
+                }
+
+                if (sort != null && sort.equals("Ascending")) {
+                    query += " ASC";
+                } else if (sort != null && sort.equals("Descending")) {
+                    query += " DESC";
+                }
+
+                //Execute query and store result from query
+                ResultSet results = statement.executeQuery(query);
+
+                //Processing Results
+                //Use methods inside the country class to store values into an object
+                //Object will be added to the arrayList, continue process through iteration
+
+                while (results.next()) {
+                    //Create the country object
+                    country tempCountry = new country();
+                    //Store values from table into temp variable
+                    String tempCountryCode = results.getString("CountryCode");
+                    int tempStartingYears = results.getInt("StartingYear");
+                    int tempTimePeriod = results.getInt("TimePeriod");
+                    Double tempAvgTemp = results.getDouble("AverageTemperature");
+                    Double tempDiffTemp = results.getDouble("DifferenceAverageTemperature");
+
+                    //Use setter methods to set values from table into object
+                    tempCountry.setCountryCode(tempCountryCode);
+                    tempCountry.setYear(tempStartingYears);
+                    tempCountry.setTimePeriod(tempTimePeriod);
+                    tempCountry.setAvgTemp(tempAvgTemp);
+                    tempCountry.setDiffTemp(tempDiffTemp);
+
+                    //Add the temp object into the returning arrayList
+                    country.add(tempCountry);
+                }
+                //Close Statement
+                statement.close();
+        }
+        catch (SQLException e) {
+            //If there is an error, print error
+            System.err.println(e.getMessage());
+        }
+        finally {
+            //Safety Code
+            try {
+                if (connection !=null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                //connection close failed
+                System.err.println(e.getMessage());
+            }
+        }
+        //Return arrayList
+        return country;
+    }
 }

@@ -8,6 +8,8 @@ public class country {
     private double tempPercentageChange;
     private double popPercentageChange;
     private double correlationValue;
+    private int timePeriod;
+    private double diffTemp;
 
     public country() {
         this.countryCode = "ZZZZ";
@@ -49,6 +51,14 @@ public class country {
         this.correlationValue = correlationValue;
     }
 
+    public void setTimePeriod(int timePeriod) {
+        this.timePeriod = timePeriod;
+    }
+
+    public void setDiffTemp(double diffTemp) {
+        this.diffTemp = diffTemp;
+    }
+
     //Getter Methods
 
     public String getCountryCode() {
@@ -77,5 +87,13 @@ public class country {
 
     public double getCorrelationValue() {
         return correlationValue;
+    }
+
+    public int getTimePeriod() {
+        return timePeriod;
+    }
+
+    public double getDiffTemp() {
+        return diffTemp;
     }
 }

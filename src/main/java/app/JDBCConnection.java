@@ -411,41 +411,51 @@ public class JDBCConnection {
             statement.setQueryTimeout(30);
 
             //The Query
-            //FIXME: NEED TO CONCATENATE WITH AN IF STATEMENTS FOR THE POPULATION AND TEMP FILTERS OTHERWISE YEARS < 1960 DON'T WORK
             String query = "SELECT " +
-                "c.CountryCode, " +
-                "t.StartingYear, " +
-                timePeriod + " AS TimePeriod, " +
-                "AVG(c.AvgTemp) AS AverageTemperature, " +
-                "AVG(c.AvgTemp) - LAG(AVG(c.AvgTemp)) OVER(PARTITION BY c.CountryCode ORDER BY t.StartingYear) AS DifferenceAverageTemperature " +
-                "FROM " +
-                "(SELECT " +
-                "CountryCode, " +
-                "CAST((Year / 10) * 10 AS INTEGER) AS StartingYear, " +
-                "AvgTemp, " +
-                "(ROW_NUMBER() OVER(PARTITION BY CountryCode ORDER BY Year) - 1) / 2 AS RowNum " +
-                "FROM CountryTempPopulation " +
-                "WHERE Year >= 1750 AND Year <= 2013 " +
-                "AND Population >= " + populationStart + " AND Population <= " + populationEnd + " " +
-                "AND AvgTemp >= " + avgTempStart + " AND AvgTemp <= " + avgTempEnd + ") t " +
-                "JOIN CountryTempPopulation c ON c.CountryCode = t.CountryCode AND c.Year >= t.StartingYear AND c.Year < t.StartingYear + " + timePeriod + " " +
-                "WHERE t.StartingYear IN (" + startingYears + ") " +
-                "GROUP BY t.CountryCode, t.StartingYear";
-
-                //Add sorting conditions based on criterion and sort parameters
-                if (criterion !=null && criterion.equals("Region Code")) {
-                    query += " ORDER BY c.CountryCode";
-                } else if (criterion !=null && criterion.equals("Average Temperature")) {
-                    query += " ORDER BY c.AvgTemp";
-                } else if (criterion !=null && criterion.equals("Difference in Average Temperature")) {
-                    query += " ORDER BY DifferenceAverageTemperature";
-                }
-
-                if (sort != null && sort.equals("Ascending")) {
-                    query += " ASC";
-                } else if (sort != null && sort.equals("Descending")) {
-                    query += " DESC";
-                }
+            "c.CountryCode, " +
+            "t.StartingYear, " +
+            timePeriod + " AS TimePeriod, " +
+            "AVG(c.AvgTemp) AS AverageTemperature, " +
+            "AVG(c.AvgTemp) - LAG(AVG(c.AvgTemp)) OVER(PARTITION BY c.CountryCode ORDER BY t.StartingYear) AS DifferenceAverageTemperature " +
+            "FROM " +
+            "(SELECT " +
+            "CountryCode, " +
+            "CAST((Year / 10) * 10 AS INTEGER) AS StartingYear, " +
+            "AvgTemp, " +
+            "(ROW_NUMBER() OVER(PARTITION BY CountryCode ORDER BY Year) - 1) / 2 AS RowNum " +
+            "FROM CountryTempPopulation " +
+            "WHERE Year >= 1750 AND Year <= 2013";
+    
+            // Check if populationStart and populationEnd are not null
+            if (populationSelect != null) {
+                query += " AND Population >= " + populationStart + " AND Population <= " + populationEnd;
+            }
+            
+            // Check if avgTempStart and avgTempEnd are not null
+            if (tempSelect != null) {
+                query += " AND AvgTemp >= " + avgTempStart + " AND AvgTemp <= " + avgTempEnd;
+            }
+            
+            query += ") t " +
+                    "JOIN CountryTempPopulation c ON c.CountryCode = t.CountryCode AND c.Year >= t.StartingYear AND c.Year < t.StartingYear + " + timePeriod + " " +
+                    "WHERE t.StartingYear IN (" + startingYears + ") " +
+                    "GROUP BY t.CountryCode, t.StartingYear";
+            
+            // Add sorting conditions based on criterion and sort parameters
+            if (criterion != null && criterion.equals("Region Code")) {
+                query += " ORDER BY c.CountryCode";
+            } else if (criterion != null && criterion.equals("Average Temperature")) {
+                query += " ORDER BY c.AvgTemp";
+            } else if (criterion != null && criterion.equals("Difference in Average Temperature")) {
+                query += " ORDER BY DifferenceAverageTemperature";
+            }
+            
+            if (sort != null && sort.equals("Ascending")) {
+                query += " ASC";
+            } else if (sort != null && sort.equals("Descending")) {
+                query += " DESC";
+            }
+    
 
                 //Execute query and store result from query
                 ResultSet results = statement.executeQuery(query);

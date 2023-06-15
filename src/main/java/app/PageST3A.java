@@ -121,13 +121,13 @@ public class PageST3A implements Handler {
         html = html + "   <div class='form-group'>";
         html = html + "     <input type='checkbox' id='population_select' name='population_select' value='population_true'>";
         html = html + "     <label for='population_select'>Population Range:</label>";
-        html = html + "     <input type='number' id='population_start_range' name='population_start_range' required title='Please enter a valid number'>";
-        html = html + "     <input type='number' id='population_end_range' name='population_end_range' required title='Please enter a valid number'>";
+        html = html + "     <input type='number' id='population_start_range' name='population_start_range'>";
+        html = html + "     <input type='number' id='population_end_range' name='population_end_range'>";
 
         html = html + "     <input type ='checkbox' id='avg_temp_select' name='avg_temp_select' value='temp_true'>";
         html = html + "     <label for='avg_temp_select'>Average Temperature Range:</label>";
-        html = html + "     <input type='number' id='temperature_start_range' name='temperature_start_range' required title='Please enter a valid number'>";
-        html = html + "     <input type='number' id='temperature_end_range' name='temperature_end_range' required title='Please enter a valid number'>";
+        html = html + "     <input type='number' id='temperature_start_range' name='temperature_start_range'>";
+        html = html + "     <input type='number' id='temperature_end_range' name='temperature_end_range'>";
         html = html + "  </div>";
 
         //Criterion and sorting filters
@@ -201,37 +201,119 @@ public class PageST3A implements Handler {
         //Create JDBC object, ...
         JDBCConnection jdbc = new JDBCConnection();
         ArrayList<country> country = new ArrayList<country>();
+        ArrayList<state> state = new ArrayList<state>();
+        ArrayList<city> city = new ArrayList<city>();
+        ArrayList<global> global = new ArrayList<global>();
 
         //Store JDBC methods into arrayList
         country = jdbc.getGeoCountryArrayList(starting_year, time_period, population_start_range, population_end_range, temperature_start_range, temperature_end_range, criterion_select, asc_desc_drop, population_select, avg_temp_select);
+        state = jdbc.getGeoStateArrayList(starting_year, time_period, criterion_select, asc_desc_drop);
+        city = jdbc.getGeoCityArrayList(starting_year, time_period, criterion_select, asc_desc_drop);
+        global = jdbc.getGeoGlobalArrayList(starting_year, time_period, criterion_select, asc_desc_drop);
 
-        //Test create table for country ArrayList
-        html += "<table class = 'ST2A-table'>";
-        html += "<thead>";
-        html += "<tr>";
-        html += "<th>Region Code</th>";
-        html += "<th>Starting Year \u00B0C</th>";
-        html += "<th>Time Period</th>";
-        html += "<th>Average Temperature</th>";
-        html += "<th>Average Temperature Difference</th>";
-        html += "</tr>";
-        html += "</thead>";
-
-        html += "<tbody>";
-        for (country c : country) {
+        //Create if statements depending on geographic_region_drop to display respective table
+        if ("Global".equals(geographic_region_drop)) {
+            html += "<table class = 'ST2A-table'>";
+            html += "<thead>";
             html += "<tr>";
-            html += "<td>" + c.getCountryCode() + "</td>";
-            html += "<td>" + c.getYear() + "</td>";
-            html += "<td>" + c.getTimePeriod() + "</td>";
-            html += "<td>" + c.getAvgTemp() + "</td>";
-            html += "<td>" + c.getDiffTemp() + "</td>";
+            html += "<th>Region Code</th>";
+            html += "<th>Starting Year</th>";
+            html += "<th>Time Period</th>";
+            html += "<th>Average Temperature</th>";
+            html += "<th>Average Temperature Difference</th>";
             html += "</tr>";
-            html += "</tbody>";
+            html += "</thead>";
+
+            for (global g : global) {
+                html += "<tbody>";
+                html += "<tr>";
+                html += "<td>" + g.getCountryCode() + "</td>";
+                html += "<td>" + g.getYear() + "</td>";
+                html += "<td>" + g.getTimePeriod() + "</td>";
+                html += "<td>" + g.getAvgTemp() + "</td>";
+                html += "<td>" + g.getDiffTemp() + "</td>";
+                html += "</tr>";
+                html += "</tbody>";
+            }
+            html += "</table>";
+        } else if ("Countries".equals(geographic_region_drop)) {
+            html += "<table class = 'ST2A-table'>";
+            html += "<thead>";
+            html += "<tr>";
+            html += "<th>Region Code</th>";
+            html += "<th>Starting Year</th>";
+            html += "<th>Time Period</th>";
+            html += "<th>Average Temperature</th>";
+            html += "<th>Average Temperature Difference</th>";
+            html += "</tr>";
+            html += "</thead>";
+
+            for (country c : country) {
+                html += "<tbody>";
+                html += "<tr>";
+                html += "<td>" + c.getCountryCode() + "</td>";
+                html += "<td>" + c.getYear() + "</td>";
+                html += "<td>" + c.getTimePeriod() + "</td>";
+                html += "<td>" + c.getAvgTemp() + "</td>";
+                html += "<td>" + c.getDiffTemp() + "</td>";
+                html += "</tr>";
+                html += "</tbody>";
+            }
+            html += "</table>";
+        } else if ("State".equals(geographic_region_drop)) {
+            html += "<table class = 'ST2A-table'>";
+            html += "<thead>";
+            html += "<tr>";
+            html += "<th>Region Code</th>";
+            html += "<th>State</th>";
+            html += "<th>Starting Year</th>";
+            html += "<th>Time Period</th>";
+            html += "<th>Average Temperature</th>";
+            html += "<th>Average Temperature Difference</th>";
+            html += "</tr>";
+            html += "</thead>";
+
+            for (state c : state) {
+                html += "<tbody>";
+                html += "<tr>";
+                html += "<td>" + c.getCountryCode() + "</td>";
+                html += "<td>" + c.getState() + "</td>";
+                html += "<td>" + c.getYear() + "</td>";
+                html += "<td>" + c.getTimePeriod() + "</td>";
+                html += "<td>" + c.getAvgTemp() + "</td>";
+                html += "<td>" + c.getDiffTemp() + "</td>";
+                html += "</tr>";
+                html += "</tbody>";
+            }
+        html += "</table>";
+        } else if ("City".equals(geographic_region_drop)) {
+            html += "<table class = 'ST2A-table'>";
+            html += "<thead>";
+            html += "<tr>";
+            html += "<th>Region Code</th>";
+            html += "<th>City</th>";
+            html += "<th>Starting Year</th>";
+            html += "<th>Time Period</th>";
+            html += "<th>Average Temperature</th>";
+            html += "<th>Average Temperature Difference</th>";
+            html += "</tr>";
+            html += "</thead>";
+
+            for (city c : city) {
+                html += "<tbody>";
+                html += "<tr>";
+                html += "<td>" + c.getCountryCode() + "</td>";
+                html += "<td>" + c.getCity() + "</td>";
+                html += "<td>" + c.getYear() + "</td>";
+                html += "<td>" + c.getTimePeriod() + "</td>";
+                html += "<td>" + c.getAvgTemp() + "</td>";
+                html += "<td>" + c.getDiffTemp() + "</td>";
+                html += "</tr>";
+                html += "</tbody>";
+            }
+            html += "</table>";
         }
 
-        html += "</table>";
-
-        //Above here thanks -DELETE AFTER PLEASE
         html = html + "</div>"; //End section-container
         html = html + "</div>"; //End second section
         html = html + "</div>"; //End results area
@@ -242,10 +324,31 @@ public class PageST3A implements Handler {
 
         // Footer
         html = html + """
+            <div style='background-color: #438c7c; height: 320px;'>
+            <div style='background-color: #438c7c; padding-bottom: 150px;'>
+            <div style='float: left; width: 50%; font-size:large;'>
+                <center><h2 style='color: #f2f2f2; font-weight: bold;'>Main Menu</h2>
+                <a href='/' style='color: #f2f2f2;'>Home</a><br><br>
+                <a href='mission.html' style='color: #f2f2f2;'>Our Mission</a><br><br>
+                <a href='page2A.html' style='color: #f2f2f2;'>Sub Task 2.A</a><br><br>
+                <a href='page2B.html' style='color: #f2f2f2;'>Sub Task 2.B</a><br><br>
+                <a href='page3A.html' style='color: #f2f2f2;'>Sub Task 3.A</a><br><br>
+                <a href='page3B.html' style='color: #f2f2f2;'>Sub Task 3.B</a><br><br>
+                </center>
+            </div>
+            <div style='width: 50%; margin-left: 50%; padding-top: 70px;'>
+                <center><img src='logo.png' alt='Rmit logo' width='300' height='100'></center>
+            </div>
+        </div>
+                """;
+        html = html + """
             <div class='footer'>
-                <p>COSC2803 - Studio Project Starter Code (Apr23)</p>
+                <p>Programming Studio 1 Project(June 2023)</p>
             </div>
         """;
+
+        //End Wrapper
+        html = html + "</div>";
 
         // Finish the HTML webpage
         html = html + "</body>" + "</html>";

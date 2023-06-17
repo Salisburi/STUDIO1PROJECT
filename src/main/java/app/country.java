@@ -10,6 +10,7 @@ public class country {
     private double correlationValue;
     private int timePeriod;
     private double diffTemp;
+    private String countryName;
 
     public country() {
         this.countryCode = "ZZZZ";
@@ -59,6 +60,10 @@ public class country {
         this.diffTemp = diffTemp;
     }
 
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
+    }
+
     //Getter Methods
 
     public String getCountryCode() {
@@ -95,5 +100,9 @@ public class country {
 
     public double getDiffTemp() {
         return diffTemp;
+    }
+
+    public String getCountryName() {
+        return countryName;
     }
 }

@@ -199,12 +199,13 @@ public class JDBCConnection {
             //Filter the table to only display the following columns based on user inputted year
             //If statements to sort query using criterion and sort inputs
             String query = "SELECT " +
-                "CountryCode, " +
-                "TempDiff, " +
-                "PopDiff, " +
-                "(TempDiff / CAST(AvgTemp AS REAL)) * 100 AS TempPercentageChange, " +
-                "(PopDiff / CAST(Population AS REAL)) * 100 AS PopPercentageChange, " +
-                "((TempDiff / CAST(AvgTemp AS REAL)) * 100 * (PopDiff / CAST(Population AS REAL)) * 100) / 100 AS CorrelationValue " +
+                "subquery.CountryCode, " +
+                "Country.CountryName AS CountryName, " +
+                "subquery.TempDiff, " +
+                "subquery.PopDiff, " +
+                "(subquery.TempDiff / CAST(subquery.AvgTemp AS REAL)) * 100 AS TempPercentageChange, " +
+                "(subquery.PopDiff / CAST(subquery.Population AS REAL)) * 100 AS PopPercentageChange, " +
+                "((subquery.TempDiff / CAST(subquery.AvgTemp AS REAL)) * 100 * (subquery.PopDiff / CAST(subquery.Population AS REAL)) * 100) / 100 AS CorrelationValue " +
                 "FROM " +
                 "(SELECT " +
                 "t1.CountryCode, " +
@@ -217,8 +218,10 @@ public class JDBCConnection {
                 "JOIN " +
                 "CountryTempPopulation AS t2 ON t1.CountryCode = t2.CountryCode " +
                 "WHERE " +
-                "t1.Year = " + startYear + " AND t2.Year = " + endYear + ") AS subquery";
-            
+                "t1.Year = " + startYear + " AND t2.Year = " + endYear + ") AS subquery " +
+                "JOIN " +
+                "Country ON subquery.CountryCode = Country.CountryCode";
+
             // Add sorting conditions based on criterion and sort parameters
             if (criterion != null && criterion.equals("Temperature")) {
                 query += " ORDER BY TempDiff";
@@ -249,6 +252,7 @@ public class JDBCConnection {
                 Double tempPercentageChange = results.getDouble("TempPercentageChange");
                 Double popPercentageChange = results.getDouble("PopPercentageChange");
                 Double correlationValue = results.getDouble("CorrelationValue");
+                String tempCountryName = results.getString("CountryName");
 
                 //Use setter methods to set values from table into object
                 //Want CountryCode, tempdifference, popdifference, % change and correlation
@@ -258,6 +262,7 @@ public class JDBCConnection {
                 tempCountry.setTempPercentageChange(tempPercentageChange);
                 tempCountry.setPopPercentageChange(popPercentageChange);
                 tempCountry.setCorrelationValue(correlationValue);
+                tempCountry.setCountryName(tempCountryName);
 
                 //Add the temp object into the returning arrayList
                 country.add(tempCountry);

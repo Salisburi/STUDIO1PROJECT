@@ -162,6 +162,7 @@ public class PageST2A implements Handler {
         html += "<thead>";
         html += "<tr>";
         html += "<th>Region Code</th>";
+        html += "<th>Country Name</th>";
         html += "<th>Average Temperature Difference \u00B0C</th>";
         html += "<th>Population Difference</th>";
         html += "<th>% Average Temperature Difference</th>";
@@ -174,6 +175,7 @@ public class PageST2A implements Handler {
             html += "<tbody>";
             html += "<tr>";
             html += "<td>" + c.getCountryCode() + "</td>";
+            html += "<td>" + c.getCountryName() + "</td>";
             html += "<td>" + c.getAvgTemp() + "</td>";
             html += "<td>" + c.getCountryPopulation() + "</td>";
             html += "<td>" + c.getTempPercentageChange() + "</td>";
@@ -190,6 +192,7 @@ public class PageST2A implements Handler {
         html += "<thead>";
         html += "<tr>";
         html += "<th>Region Code</th>";
+        html += "<th>Country Name</th>";
         html += "<th>Average Temperature Difference</th>";
         html += "<th>Population Difference</th>";
         html += "<th>% Average Temperature Difference</th>";
@@ -202,6 +205,7 @@ public class PageST2A implements Handler {
             html += "<tbody>";
             html += "<tr>";
             html += "<td>" + w.getWorldCode() + "</td>";
+            html += "<td>World</th>";
             html += "<td>" + w.getAvgTemp() + "</td>";
             html += "<td>" + w.getWorldPopulation() + "</td>";
             html += "<td>" + w.getTempPercentageChange() + "</td>";

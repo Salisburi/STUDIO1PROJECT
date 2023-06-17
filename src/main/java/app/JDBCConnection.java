@@ -122,7 +122,7 @@ public class JDBCConnection {
             statement.setQueryTimeout(30);
 
             //SQL query
-            String query = "SELECT Year, Population FROM WorldPopulation"; //Will select the entire table of the WorldPopulation from database
+            String query = "SELECT Year, Population FROM WorldTempPopulation"; //Will select the entire table of the WorldTempPopulation from database
 
             //Execute query and store result from query
             ResultSet results = statement.executeQuery(query); //Will execute the above query and store into an "arraylist" results

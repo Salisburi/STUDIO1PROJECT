@@ -71,7 +71,7 @@ public class PageST3A implements Handler {
         // Add header content block
         html = html + """
             <div class='header-ST3A'>
-            <h1>Similarity Temperature Comparison Thing</h1>
+            <h1>Geographic Regions Temperature Comparison</h1>
             </div>
         """;
 
